@@ -48,7 +48,7 @@ public class Application extends android.app.Application {
     private Boolean mSyncEnabled = false;
     private String mSyncGatewayUrl = "http://10.0.2.2:4984/todo/";
     private Boolean mLoggingEnabled = false;
-    private Boolean mUsePrebuiltDb = false;
+    private Boolean mUsePrebuiltDb = true;
     private Boolean mConflictResolution = false;
 
     public Database getDatabase() {
@@ -115,6 +115,8 @@ public class Application extends android.app.Application {
         startConflictLiveQuery();
     }
 
+    //COdigo casi inutil, sirve para usar lista precargada de ejemplo en la carpeta assets o para
+    //buscar una con el nombre de todo
     private void installPrebuiltDb() {
         if (!mUsePrebuiltDb) {
             return;
@@ -139,6 +141,8 @@ public class Application extends android.app.Application {
         }
     }
 
+
+    //Metodo para crear nueva base de datos (pueden ser infinitas)
     private void openDatabase(String username, String key, String newKey) {
         String dbname = username;
         DatabaseOptions options = new DatabaseOptions();

@@ -164,6 +164,8 @@ public class ListsActivity extends AppCompatActivity {
 
     // Database
 
+    //metodo para obtener los tasklist y se hace una vista
+
     private void setupViewAndQuery() {
         if (mDatabase == null) {
             return;
@@ -182,6 +184,9 @@ public class ListsActivity extends AppCompatActivity {
         }
 
         listsLiveQuery = listsView.createQuery().toLiveQuery();
+
+        //Ahora se hace una vista sobre los tasks que no han sido marcados como completados y
+        //luego se extrae a la lista a la que pertenecen estos tasks
 
         com.couchbase.lite.View incompTasksCountView = mDatabase.getView("list/incompleteTasksCount");
         if (incompTasksCountView.getMap() == null) {
@@ -208,6 +213,9 @@ public class ListsActivity extends AppCompatActivity {
 
         incompTasksCountLiveQuery = incompTasksCountView.createQuery().toLiveQuery();
         incompTasksCountLiveQuery.setGroupLevel(1);
+
+        //Todo esto es para desplegar el numero de tareas incompletas a lado de cada lista a la que
+        // corresponden
 
         final LiveQuery finalIncompTasksCountLiveQuery = incompTasksCountLiveQuery;
         incompTasksCountLiveQuery.addChangeListener(new LiveQuery.ChangeListener() {
@@ -249,6 +257,7 @@ public class ListsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
     private class ListAdapter extends LiveQueryAdapter {
         public ListAdapter(Context context, LiveQuery query) {
             super(context, query);
@@ -280,6 +289,7 @@ public class ListsActivity extends AppCompatActivity {
 
     }
 
+    //DIalogo para iniciar la creada de un TaskList, solo se envía el titulo.
     private void displayCreateDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(getResources().getString(R.string.title_dialog_new_list));
@@ -309,6 +319,13 @@ public class ListsActivity extends AppCompatActivity {
         alert.show();
     }
 
+    //Edicion de listas, relacionado con las listas del metodo que sigue
+    /* TASKLIST = {name=lalala, type=task-list, owner= todo }
+    * Las Revisiones son las actualizaciones, literal se hace una revision del documento
+    * y con el metodo de setUserPorperties y getUserProperties se editan y se accesan los
+    * documentos
+    * */
+
     private void updateList(final Document list) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(getResources().getString(R.string.title_dialog_update));
@@ -327,7 +344,7 @@ public class ListsActivity extends AppCompatActivity {
                         @Override
                         public boolean update(UnsavedRevision newRevision) {
                             Map<String, Object> props = newRevision.getUserProperties();
-                            props.put("name", input.getText().toString());
+                            props.put("name", input.getText().toString().toUpperCase());
                             newRevision.setUserProperties(props);
                             return true;
                         }
@@ -340,6 +357,7 @@ public class ListsActivity extends AppCompatActivity {
         alert.show();
     }
 
+    // Método muy simple, usa el delete de Document de Couchbase
     private void deleteList(final Document list) {
         try {
             list.delete();
@@ -347,6 +365,8 @@ public class ListsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    //codigo para guardar listas, podemos hacerlo nuestro primer nivel de detalle
 
     private SavedRevision createTaskList(String title) throws CouchbaseLiteException {
         Map<String, Object> properties = new HashMap<String, Object>();

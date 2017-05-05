@@ -11,6 +11,9 @@ import com.couchbase.lite.LiveQuery;
 import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.todo.Application;
 
+
+//TODO ESTE CODIGO ES PARA QUE LAS LISTAS SE ACTUALICEN AUTOMATICAMENTE
+//CADA VEZ QUE HAY NUEVOS DATOS
 public class LiveQueryAdapter extends BaseAdapter {
     private LiveQuery query;
     public QueryEnumerator enumerator;

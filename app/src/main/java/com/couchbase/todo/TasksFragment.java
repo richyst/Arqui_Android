@@ -385,6 +385,17 @@ public class TasksFragment extends Fragment {
         }
     }
 
+
+
+
+
+
+    // Empieza desmadre para tomar fotografías
+    //Todo esto lo podemos cortar eventualmente
+
+
+
+
     private void attachImage(Document task, Bitmap image) {
         UnsavedRevision revision = task.createRevision();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
