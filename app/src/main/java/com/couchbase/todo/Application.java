@@ -77,12 +77,7 @@ public class Application extends android.app.Application {
                             .enableWebKitInspector(new CouchbaseInspectorModulesProvider(this))
                             .build());
         }
-
-        if (mLoginFlowEnabled) {
-            login();
-        } else {
             startSession("todo", null, null);
-        }
 
         try {
             manager = new Manager(new AndroidContext(getApplicationContext()), Manager.DEFAULT_OPTIONS);
@@ -203,13 +198,6 @@ public class Application extends android.app.Application {
 
     // Login
 
-    private void login() {
-        Intent intent = new Intent();
-        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-        intent.setClass(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-    }
-
     private void showApp() {
         Intent intent = new Intent();
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
@@ -223,16 +211,6 @@ public class Application extends android.app.Application {
         startSession(username, password, null);
     }
 
-    public void logout() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                stopReplication();
-                closeDatabase();
-                login();
-            }
-        });
-    }
 
     // Replication
     private void startReplication(String username, String password) {

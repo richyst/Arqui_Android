@@ -23,7 +23,6 @@ class ReplicationChangeListener implements Replication.ChangeListener {
                 RemoteRequestResponseException exception = (RemoteRequestResponseException) lastError;
                 if (exception.getCode() == 401) {
                     application.showErrorMessage("Your username or password is not correct.", null);
-                    application.logout();
                 }
             }
         }

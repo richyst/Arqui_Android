@@ -146,7 +146,6 @@ public class ListsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.logout:
                 Application application = (Application) getApplication();
-                application.logout();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.

@@ -22,12 +22,6 @@
             android:name=".ListsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/app_name"
-            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
