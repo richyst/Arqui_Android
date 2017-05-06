@@ -79,13 +79,6 @@ public class ListsActivity extends AppCompatActivity {
             }
         });
 
-        fab.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                createListConflict();
-                return true;
-            }
-        });
 
         Application application = (Application) getApplication();
         mDatabase = application.getDatabase();
@@ -196,11 +189,6 @@ public class ListsActivity extends AppCompatActivity {
                     String type = (String) document.get("type");
                     if ("task".equals(type)) {
                         Boolean complete = (Boolean) document.get("complete");
-                        if (!complete) {
-                            Map<String, Object> taskList = (Map<String, Object>) document.get("taskList");
-                            String listId = (String) taskList.get("id");
-                            emitter.emit(listId, null);
-                        }
                     }
                 }
             }, new Reducer() {
@@ -276,13 +264,6 @@ public class ListsActivity extends AppCompatActivity {
             TextView text = (TextView) convertView.findViewById(R.id.text);
             text.setText(key);
 
-
-            TextView countText = (TextView) convertView.findViewById(R.id.task_count);
-            if (incompCounts.get(list.getId()) != null) {
-                countText.setText(String.valueOf(((int) incompCounts.get(list.getId()))));
-            } else {
-                countText.setText("");
-            }
 
             return convertView;
         }
@@ -367,6 +348,7 @@ public class ListsActivity extends AppCompatActivity {
     }
 
     //codigo para guardar listas, podemos hacerlo nuestro primer nivel de detalle
+    //Osea que sea cada base de datos
 
     private SavedRevision createTaskList(String title) throws CouchbaseLiteException {
         Map<String, Object> properties = new HashMap<String, Object>();
@@ -380,29 +362,5 @@ public class ListsActivity extends AppCompatActivity {
         return document.putProperties(properties);
     }
 
-    private void createListConflict() {
-        SavedRevision savedRevision = null;
-        try {
-            savedRevision = createTaskList("Test Conflicts List");
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
-        UnsavedRevision newRev1 = savedRevision.createRevision();
-        Map<String, Object> propsRev1 = newRev1.getProperties();
-        propsRev1.put("name", "Foosball");
-        UnsavedRevision newRev2 = savedRevision.createRevision();
-        Map<String, Object> propsRev2 = newRev2.getProperties();
-        propsRev2.put("name", "Table Football");
-        try {
-            newRev1.save(true);
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
-        try {
-            newRev2.save(true);
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
-    }
 
 }

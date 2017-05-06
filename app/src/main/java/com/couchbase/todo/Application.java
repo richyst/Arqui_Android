@@ -107,40 +107,12 @@ public class Application extends android.app.Application {
 
     private void startSession(String username, String password, String newPassword) {
         enableLogging();
-        installPrebuiltDb();
         openDatabase(username, password, newPassword);
         mUsername = username;
         startReplication(username, password);
         showApp();
         startConflictLiveQuery();
     }
-
-    //COdigo casi inutil, sirve para usar lista precargada de ejemplo en la carpeta assets o para
-    //buscar una con el nombre de todo
-    private void installPrebuiltDb() {
-        if (!mUsePrebuiltDb) {
-            return;
-        }
-
-        try {
-            manager = new Manager(new AndroidContext(getApplicationContext()), Manager.DEFAULT_OPTIONS);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            database = manager.getExistingDatabase("todo");
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
-        if (database == null) {
-            try {
-                ZipUtils.unzip(getAssets().open("todo.zip"), manager.getContext().getFilesDir());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
 
     //Metodo para crear nueva base de datos (pueden ser infinitas)
     private void openDatabase(String username, String key, String newKey) {
@@ -417,10 +389,7 @@ public class Application extends android.app.Application {
 
         Map<String, Object> mergedProps = parent.getUserProperties();
         if (mergedProps == null) mergedProps = new HashMap<>();
-        Attachment mergedImage = parent.getAttachment("image");
         boolean gotTask = false;
-        boolean gotComplete = false;
-        boolean gotImage = false;
         for (SavedRevision rev : revs) {
             Map<String, Object> props = rev.getUserProperties();
             if (props != null) {
@@ -431,35 +400,16 @@ public class Application extends android.app.Application {
                         gotTask = true;
                     }
                 }
-
-                if (!gotComplete) {
-                    boolean complete = (boolean) props.get("complete");
-                    if (complete != (boolean) mergedProps.get("complete")) {
-                        mergedProps.put("complete", complete);
-                        gotComplete = true;
-                    }
-                }
             }
 
-            if (!gotImage) {
-//                Attachment attachment = rev.getAttachment("image");
-//                String attachmentDigest = (String) attachment.getMetadata().get("digest");
-//                if (attachmentDigest != mergedImage.getMetadata().get("digest")) {
-//                    mergedImage = attachment;
-//                    gotImage = true;
-//                }
-                gotImage = true;
-            }
-
-            if (gotTask && gotComplete && gotImage) {
+            if (gotTask) {
                 break;
             }
         }
 
-        List<Object> propsAndImage = new ArrayList<>();
-        propsAndImage.add(mergedProps);
-        propsAndImage.add(mergedImage);
-        return propsAndImage;
+        List<Object> props = new ArrayList<>();
+        props.add(mergedProps);
+        return props;
     }
 
     private SavedRevision findCommonParent(List<SavedRevision> revisions) {
