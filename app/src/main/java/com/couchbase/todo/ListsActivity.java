@@ -56,10 +56,6 @@ public class ListsActivity extends AppCompatActivity {
             listsLiveQuery.stop();
             listsLiveQuery = null;
         }
-        if (incompTasksCountLiveQuery != null) {
-            incompTasksCountLiveQuery.stop();
-            incompTasksCountLiveQuery = null;
-        }
     }
 
     @Override

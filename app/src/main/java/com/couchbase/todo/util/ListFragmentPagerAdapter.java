@@ -10,10 +10,10 @@ public class ListFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT;
     private String tabTitles[] = new String[]{"Usuarios"};
 
-    public ListFragmentPagerAdapter(FragmentManager fm, int tabCount) {
+    public ListFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
 
-        PAGE_COUNT = tabCount;
+        PAGE_COUNT = 1;
     }
 
     @Override

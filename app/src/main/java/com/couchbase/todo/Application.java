@@ -14,12 +14,6 @@ import com.couchbase.lite.Document;
 import com.couchbase.lite.DocumentChange;
 import com.couchbase.lite.LiveQuery;
 import com.couchbase.lite.Manager;
-import com.couchbase.lite.Query;
-import com.couchbase.lite.QueryEnumerator;
-import com.couchbase.lite.QueryRow;
-import com.couchbase.lite.SavedRevision;
-import com.couchbase.lite.TransactionalTask;
-import com.couchbase.lite.UnsavedRevision;
 import com.couchbase.lite.android.AndroidContext;
 import com.facebook.stetho.Stetho;
 import com.robotpajamas.stetho.couchbase.CouchbaseInspectorModulesProvider;
@@ -66,7 +60,7 @@ public class Application extends android.app.Application {
                             .enableWebKitInspector(new CouchbaseInspectorModulesProvider(this))
                             .build());
         }
-        startSession("todo", null, null);
+        startSession("todo");
 
         try {
             manager = new Manager(new AndroidContext(getApplicationContext()), Manager.DEFAULT_OPTIONS);
@@ -89,22 +83,18 @@ public class Application extends android.app.Application {
 
     // Session
 
-    private void startSession(String username, String password, String newPassword) {
+    private void startSession(String username) {
         enableLogging();
-        openDatabase(username, password, newPassword);
+        openDatabase(username);
         mUsername = username;
         showApp();
     }
 
     //Metodo para crear nueva base de datos (pueden ser infinitas)
-    private void openDatabase(String username, String key, String newKey) {
+    private void openDatabase(String username) {
         String dbname = username;
         DatabaseOptions options = new DatabaseOptions();
         options.setCreate(true);
-
-        if (mEncryptionEnabled) {
-            options.setEncryptionKey(key);
-        }
 
         Manager manager = null;
         try {
@@ -117,21 +107,7 @@ public class Application extends android.app.Application {
         } catch (CouchbaseLiteException e) {
             e.printStackTrace();
         }
-        if (newKey != null) {
-            try {
-                database.changeEncryptionKey(newKey);
-            } catch (CouchbaseLiteException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
-
-    private void closeDatabase() {
-        database.close();
-    }
-
-    // Login
 
     private void showApp() {
         Intent intent = new Intent();
@@ -141,15 +117,8 @@ public class Application extends android.app.Application {
         startActivity(intent);
     }
 
-    public void login(String username, String password) {
-        mUsername = username;
-        startSession(username, password, null);
-    }
-
-
     public String getUsername() {
         return mUsername;
     }
-
 
 }
