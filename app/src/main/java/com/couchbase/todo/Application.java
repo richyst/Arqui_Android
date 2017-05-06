@@ -45,10 +45,6 @@ public class Application extends android.app.Application {
 
     private Boolean mLoginFlowEnabled = false;
     private Boolean mEncryptionEnabled = false;
-    private Boolean mSyncEnabled = false;
-    private String mSyncGatewayUrl = "http://10.0.2.2:4984/todo/";
-    private Boolean mLoggingEnabled = false;
-    private Boolean mUsePrebuiltDb = true;
     private Boolean mConflictResolution = false;
 
     public Database getDatabase() {
@@ -104,7 +100,6 @@ public class Application extends android.app.Application {
         enableLogging();
         openDatabase(username, password, newPassword);
         mUsername = username;
-        startReplication(username, password);
         showApp();
         startConflictLiveQuery();
     }
@@ -209,49 +204,6 @@ public class Application extends android.app.Application {
     public void login(String username, String password) {
         mUsername = username;
         startSession(username, password, null);
-    }
-
-
-    // Replication
-    private void startReplication(String username, String password) {
-        if (!mSyncEnabled) {
-            return;
-        }
-
-        URL url = null;
-        try {
-            url = new URL(mSyncGatewayUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        ReplicationChangeListener changeListener = new ReplicationChangeListener(this);
-
-        pusher = database.createPushReplication(url);
-        pusher.setContinuous(true); // Runs forever in the background
-        pusher.addChangeListener(changeListener);
-
-        puller = database.createPullReplication(url);
-        puller.setContinuous(true); // Runs forever in the background
-        puller.addChangeListener(changeListener);
-
-        if (mLoginFlowEnabled) {
-            Authenticator authenticator = AuthenticatorFactory.createBasicAuthenticator(username, password);
-            pusher.setAuthenticator(authenticator);
-            puller.setAuthenticator(authenticator);
-        }
-
-        pusher.start();
-        puller.start();
-    }
-
-    private void stopReplication() {
-        if (!mSyncEnabled) {
-            return;
-        }
-
-        pusher.stop();
-        puller.stop();
     }
 
 
