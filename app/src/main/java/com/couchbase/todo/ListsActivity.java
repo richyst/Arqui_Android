@@ -177,54 +177,6 @@ public class ListsActivity extends AppCompatActivity {
 
         listsLiveQuery = listsView.createQuery().toLiveQuery();
 
-        //Ahora se hace una vista sobre los tasks que no han sido marcados como completados y
-        //luego se extrae a la lista a la que pertenecen estos tasks
-
-        com.couchbase.lite.View incompTasksCountView = mDatabase.getView("list/incompleteTasksCount");
-        if (incompTasksCountView.getMap() == null) {
-            incompTasksCountView.setMapReduce(new Mapper() {
-                @Override
-                public void map(Map<String, Object> document, Emitter emitter) {
-                    String type = (String) document.get("type");
-                    if ("task".equals(type)) {
-                        Boolean complete = (Boolean) document.get("complete");
-                    }
-                }
-            }, new Reducer() {
-                @Override
-                public Object reduce(List<Object> keys, List<Object> values, boolean rereduce) {
-                    return values.size();
-                }
-            }, "1.0");
-        }
-
-        incompTasksCountLiveQuery = incompTasksCountView.createQuery().toLiveQuery();
-        incompTasksCountLiveQuery.setGroupLevel(1);
-
-        //Todo esto es para desplegar el numero de tareas incompletas a lado de cada lista a la que
-        // corresponden
-
-        final LiveQuery finalIncompTasksCountLiveQuery = incompTasksCountLiveQuery;
-        incompTasksCountLiveQuery.addChangeListener(new LiveQuery.ChangeListener() {
-            @Override
-            public void changed(LiveQuery.ChangeEvent event) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Map<String, Object> counts = new HashMap<String, Object>();
-                        QueryEnumerator rows = finalIncompTasksCountLiveQuery.getRows();
-                        for (QueryRow row : rows) {
-                            String listId = (String) row.getKey();
-                            int count = (int) row.getValue();
-                            counts.put(listId, count);
-                        }
-                        incompCounts = counts;
-                        mAdapter.notifyDataSetChanged();
-                    }
-                });
-            }
-        });
-        incompTasksCountLiveQuery.start();
     }
 
     private void handleListPopupAction(MenuItem item, Document list) {
