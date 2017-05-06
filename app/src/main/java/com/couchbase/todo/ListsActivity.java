@@ -107,15 +107,9 @@ public class ListsActivity extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         Document list = (Document) mAdapter.getItem(pos);
-                        String owner = (String) list.getProperties().get("owner");
                         Application application = (Application) getApplication();
-                        String moderatorDocId = "moderator." + application.getUsername();
-                        if (owner == null || owner.equals(application.getUsername()))
-                            handleListPopupAction(item, list);
-                        else if (application.getDatabase().getExistingDocument(moderatorDocId) != null)
-                            handleListPopupAction(item, list);
-                        else
-                            application.showErrorMessage("Only the owner or a moderator can update/delete the list", null);
+                        handleListPopupAction(item, list);
+
                         return true;
                     }
                 });
@@ -127,8 +121,6 @@ public class ListsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the logout_menu items for use in the action bar
-
         Bundle bundle = this.getIntent().getExtras();
         if(bundle != null) {
             Boolean loginFlowEnabled = bundle.getBoolean(Application.LOGIN_FLOW_ENABLED);
