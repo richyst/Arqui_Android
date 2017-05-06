@@ -124,10 +124,10 @@ public class TasksFragment extends Fragment {
                 @Override
                 public void map(Map<String, Object> document, Emitter emitter) {
                     String type = (String) document.get("type");
-                    if ("task".equals(type)) {
-                        Map<String, Object> taskList = (Map<String, Object>) document.get("taskList");
+                    if ("user".equals(type)) {
+                        Map<String, Object> taskList = (Map<String, Object>) document.get("list");
                         String listId = (String) taskList.get("id");
-                        String task = (String) document.get("task");
+                        String task = (String) document.get("name");
                         ArrayList<String> key = new ArrayList<String>();
                         key.add(listId);
                         key.add(task);
@@ -197,7 +197,7 @@ public class TasksFragment extends Fragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 Map<String, Object> updatedProperties = new HashMap<String, Object>();
                 updatedProperties.putAll(task.getProperties());
-                updatedProperties.put("task", input.getText().toString());
+                updatedProperties.put("name", input.getText().toString());
 
                 try {
                     task.putProperties(updatedProperties);
@@ -230,14 +230,14 @@ public class TasksFragment extends Fragment {
                 convertView = inflater.inflate(R.layout.view_task, null);
             }
 
-            final Document task = (Document) getItem(position);
-            if (task == null || task.getCurrentRevision() == null) {
+            final Document user = (Document) getItem(position);
+            if (user == null || user.getCurrentRevision() == null) {
                 return convertView;
             }
 
 
             TextView text = (TextView) convertView.findViewById(R.id.text);
-            text.setText((String) task.getProperty("task"));
+            text.setText((String) user.getProperty("name"));
 
             return convertView;
         }
@@ -246,7 +246,7 @@ public class TasksFragment extends Fragment {
 
     private void displayCreateDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setTitle(getResources().getString(R.string.title_dialog_new_task));
+        alert.setTitle("Create new User");
 
         final android.view.View view = mInflater.inflate(R.layout.view_dialog_input, null);
         final EditText input = (EditText) view.findViewById(R.id.text);
@@ -269,15 +269,14 @@ public class TasksFragment extends Fragment {
     }
 
     private SavedRevision createTask(String title) {
-        Map<String, Object> taskListInfo = new HashMap<String, Object>();
-        taskListInfo.put("id", mTaskList.getId());
-        taskListInfo.put("owner", mTaskList.getProperty("owner"));
+        Map<String, Object> ListInfo = new HashMap<String, Object>();
+        ListInfo.put("id", mTaskList.getId());
 
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("type", "task");
-        properties.put("taskList", taskListInfo);
+        properties.put("type", "user");
+        properties.put("list", ListInfo);
         properties.put("createdAt", new Date());
-        properties.put("task", title);
+        properties.put("name", title);
 
         Document document = mDatabase.createDocument();
         try {

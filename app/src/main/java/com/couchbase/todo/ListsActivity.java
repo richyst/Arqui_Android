@@ -156,7 +156,7 @@ public class ListsActivity extends AppCompatActivity {
                 @Override
                 public void map(Map<String, Object> document, Emitter emitter) {
                     String type = (String) document.get("type");
-                    if ("task-list".equals(type)) {
+                    if ("list".equals(type)) {
                         emitter.emit(document.get("name"), null);
                     }
                 }
@@ -291,9 +291,8 @@ public class ListsActivity extends AppCompatActivity {
 
     private SavedRevision createTaskList(String title) throws CouchbaseLiteException {
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("type", "task-list");
+        properties.put("type", "list");
         properties.put("name", title);
-        properties.put("owner", mUsername);
 
         String docId = mUsername + "." + UUID.randomUUID();
 
