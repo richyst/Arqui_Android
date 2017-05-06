@@ -13,10 +13,6 @@ public class ListDetailActivity extends AppCompatActivity {
 
     public static final String INTENT_LIST_ID = "list_id";
 
-    private static final int REQUEST_TAKE_PHOTO = 1;
-    private static final int REQUEST_CHOOSE_PHOTO = 2;
-    private static final int THUMBNAIL_SIZE = 150;
-
     private Database mDatabase;
     private Document mTaskList;
     private String mUsername;
@@ -31,25 +27,13 @@ public class ListDetailActivity extends AppCompatActivity {
         mUsername = application.getUsername();
         mTaskList = mDatabase.getDocument(getIntent().getStringExtra(INTENT_LIST_ID));
 
-        int tabCount = (isOwner() || hasModeratorAccess()) ? 2 : 1;
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new ListFragmentPagerAdapter(getSupportFragmentManager(), tabCount));
+        viewPager.setAdapter(new ListFragmentPagerAdapter(getSupportFragmentManager(),1));
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
     }
-
-    private boolean isOwner()
-    {
-        return mTaskList.getProperty("owner").equals(mUsername);
-    }
-
-    private boolean hasModeratorAccess()
-    {
-        return mDatabase.getExistingDocument("moderator." + mUsername) != null;
-    }
-
 }

@@ -329,20 +329,19 @@ public class Application extends android.app.Application {
                     case "task-list":
                     case "task-list.user":
                         Map<String, Object> props = defaultWinning.getUserProperties();
-                        Attachment image = defaultWinning.getAttachment("image");
-                        resolveConflicts(revs, props, image);
+                        resolveConflicts(revs, props);
                         break;
                     // TRAINING: N-way merge conflict resolution
                     case "task":
-                        List<Object> mergedPropsAndImage = nWayMergeConflicts(revs);
-                        resolveConflicts(revs, (Map<String, Object>) mergedPropsAndImage.get(0), (Attachment) mergedPropsAndImage.get(1));
+                        List<Object> mergedProps = nWayMergeConflicts(revs);
+                        resolveConflicts(revs, (Map<String, Object>) mergedProps.get(0));
                         break;
                 }
             }
         }
     }
 
-    private void resolveConflicts(final List<SavedRevision> revs, final Map<String, Object> desiredProps, final Attachment desiredImage) {
+    private void resolveConflicts(final List<SavedRevision> revs, final Map<String, Object> desiredProps) {
         database.runInTransaction(new TransactionalTask() {
             @Override
             public boolean run() {
@@ -351,13 +350,6 @@ public class Application extends android.app.Application {
                     UnsavedRevision newRev = rev.createRevision(); // Create new revision
                     if (i == 0) { // That's the current/winning revision
                         newRev.setUserProperties(desiredProps);
-                        if (desiredImage != null) {
-                            try {
-                                newRev.setAttachment("image", "image/jpg", desiredImage.getContent());
-                            } catch (CouchbaseLiteException e) {
-                                e.printStackTrace();
-                            }
-                        }
                     } else { // That's a conflicting revision, delete it
                         newRev.setIsDeletion(true);
                     }

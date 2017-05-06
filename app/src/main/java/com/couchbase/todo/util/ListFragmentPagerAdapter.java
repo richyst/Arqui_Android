@@ -5,11 +5,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.couchbase.todo.TasksFragment;
-import com.couchbase.todo.UsersFragment;
 
 public class ListFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT;
-    private String tabTitles[] = new String[]{"Tasks", "Users"};
+    private String tabTitles[] = new String[]{"Tasks"};
 
     public ListFragmentPagerAdapter(FragmentManager fm, int tabCount) {
         super(fm);
@@ -24,14 +23,8 @@ public class ListFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
                 return new TasksFragment();
-            case 1:
-                return new UsersFragment();
-            default:
-                return null;
-        }
+
     }
 
     @Override
