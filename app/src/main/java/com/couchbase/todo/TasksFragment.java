@@ -51,6 +51,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -151,6 +152,15 @@ public class TasksFragment extends Fragment {
         final TasksFragment.TaskAdapter mAdapter = new TasksFragment.TaskAdapter(getActivity(), listsLiveQuery);
 
         mListView.setAdapter(mAdapter);
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Document user = (Document) mAdapter.getItem(i);
+                displayInfo(user);
+            }
+        });
+
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int pos, long id) {
@@ -171,6 +181,26 @@ public class TasksFragment extends Fragment {
 
     }
 
+    private void displayInfo(Document user){
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        String name = (String) user.getProperty("name");
+        String password = (String) user.getProperty("password");
+        String createdAt = dateFormat.format(user.getProperty("createdAt"));
+        new AlertDialog.Builder(getContext())
+                .setTitle("Usuario " + name)
+                .setMessage("Nombre: "+name+"\nPassword: " + password + "\nCreado: "+createdAt)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .show();
+    }
     private void handleTaskPopupAction(MenuItem item, Document task) {
         switch (item.getItemId()) {
             case R.id.update:
@@ -184,12 +214,12 @@ public class TasksFragment extends Fragment {
 
     private void updateTask(final Document task) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-        alert.setTitle(getResources().getString(R.string.title_dialog_update));
+        alert.setTitle("Update Usuario");
 
         final EditText input = new EditText(getContext());
         input.setMaxLines(1);
         input.setSingleLine(true);
-        String text = (String) task.getProperty("task");
+        String text = (String) task.getProperty("name");
         input.setText(text);
         alert.setView(input);
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -248,16 +278,18 @@ public class TasksFragment extends Fragment {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
         alert.setTitle("Create new User");
 
-        final android.view.View view = mInflater.inflate(R.layout.view_dialog_input, null);
+        final android.view.View view = mInflater.inflate(R.layout.view_dialog_input1, null);
         final EditText input = (EditText) view.findViewById(R.id.text);
+        final EditText input1 = (EditText) view.findViewById(R.id.text1);
         alert.setView(view);
 
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                     String title = input.getText().toString();
-                    if (title.length() == 0)
+                    String password = input1.getText().toString();
+                    if (title.length() == 0 || password.length()==0)
                         return;
-                    createTask(title);
+                    createTask(title, password);
             }
         });
 
@@ -268,7 +300,7 @@ public class TasksFragment extends Fragment {
         alert.show();
     }
 
-    private SavedRevision createTask(String title) {
+    private SavedRevision createTask(String title, String password) {
         Map<String, Object> ListInfo = new HashMap<String, Object>();
         ListInfo.put("id", mTaskList.getId());
 
@@ -277,6 +309,7 @@ public class TasksFragment extends Fragment {
         properties.put("list", ListInfo);
         properties.put("createdAt", new Date());
         properties.put("name", title);
+        properties.put("password", password);
 
         Document document = mDatabase.createDocument();
         try {
