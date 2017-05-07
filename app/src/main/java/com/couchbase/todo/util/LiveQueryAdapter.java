@@ -62,8 +62,4 @@ public class LiveQueryAdapter extends BaseAdapter {
         return null;
     }
 
-    public void invalidate() {
-        if (query != null)
-            query.stop();
-    }
 }

@@ -1,40 +1,26 @@
 package com.couchbase.todo;
 
 import android.content.Intent;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.couchbase.lite.Attachment;
 import com.couchbase.lite.CouchbaseLiteException;
 import com.couchbase.lite.Database;
 import com.couchbase.lite.DatabaseOptions;
 import com.couchbase.lite.Document;
-import com.couchbase.lite.DocumentChange;
-import com.couchbase.lite.LiveQuery;
 import com.couchbase.lite.Manager;
 import com.couchbase.lite.android.AndroidContext;
 import com.facebook.stetho.Stetho;
 import com.robotpajamas.stetho.couchbase.CouchbaseInspectorModulesProvider;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static java.lang.Math.min;
 
 public class Application extends android.app.Application {
     public static final String TAG = "Todo";
     public static final String LOGIN_FLOW_ENABLED = "login_flow_enabled";
 
     private Boolean mLoginFlowEnabled = false;
-    private Boolean mEncryptionEnabled = false;
 
     public Database getDatabase() {
         return database;
@@ -42,7 +28,6 @@ public class Application extends android.app.Application {
 
     private Manager manager;
     private Database database;
-    private ArrayList<Document> accessDocuments = new ArrayList<Document>();
 
     private String mUsername;
 

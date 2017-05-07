@@ -14,7 +14,7 @@ public class ListDetailActivity extends AppCompatActivity {
     public static final String INTENT_LIST_ID = "list_id";
 
     private Database mDatabase;
-    private Document mTaskList;
+    private Document mList;
     private String mUsername;
 
     @Override
@@ -25,14 +25,12 @@ public class ListDetailActivity extends AppCompatActivity {
         Application application = (Application)getApplication();
         mDatabase = application.getDatabase();
         mUsername = application.getUsername();
-        mTaskList = mDatabase.getDocument(getIntent().getStringExtra(INTENT_LIST_ID));
+        mList = mDatabase.getDocument(getIntent().getStringExtra(INTENT_LIST_ID));
 
 
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(new ListFragmentPagerAdapter(getSupportFragmentManager()));
 
-        // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
     }

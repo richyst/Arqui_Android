@@ -26,16 +26,12 @@ import com.couchbase.lite.Document;
 import com.couchbase.lite.Emitter;
 import com.couchbase.lite.LiveQuery;
 import com.couchbase.lite.Mapper;
-import com.couchbase.lite.QueryEnumerator;
-import com.couchbase.lite.QueryRow;
-import com.couchbase.lite.Reducer;
 import com.couchbase.lite.SavedRevision;
 import com.couchbase.lite.UnsavedRevision;
 import com.couchbase.lite.util.Log;
 import com.couchbase.todo.util.LiveQueryAdapter;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -43,10 +39,8 @@ public class ListsActivity extends AppCompatActivity {
 
     private Database mDatabase;
     private String mUsername;
-    private Map<String, Object> incompCounts;
 
     private LiveQuery listsLiveQuery = null;
-    private LiveQuery incompTasksCountLiveQuery = null;
     private ListAdapter mAdapter;
 
     @Override
@@ -248,7 +242,7 @@ public class ListsActivity extends AppCompatActivity {
 
     private void updateList(final Document list) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle(getResources().getString(R.string.title_dialog_update));
+        alert.setTitle("Update Lista");
 
         final EditText input = new EditText(this);
         input.setMaxLines(1);
@@ -264,7 +258,7 @@ public class ListsActivity extends AppCompatActivity {
                         @Override
                         public boolean update(UnsavedRevision newRevision) {
                             Map<String, Object> props = newRevision.getUserProperties();
-                            props.put("name", input.getText().toString().toUpperCase());
+                            props.put("name", input.getText().toString());
                             newRevision.setUserProperties(props);
                             return true;
                         }
