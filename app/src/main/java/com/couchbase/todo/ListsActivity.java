@@ -31,6 +31,10 @@ import com.couchbase.lite.UnsavedRevision;
 import com.couchbase.lite.util.Log;
 import com.couchbase.todo.util.LiveQueryAdapter;
 
+import com.couchbase.todo.libreria.CouchbaseDatabase;
+import com.couchbase.todo.libreria.CouchbaseManager;
+import com.couchbase.todo.libreria.CouchbaseUser;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

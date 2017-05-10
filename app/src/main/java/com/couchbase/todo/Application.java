@@ -12,6 +12,10 @@ import com.couchbase.lite.android.AndroidContext;
 import com.facebook.stetho.Stetho;
 import com.robotpajamas.stetho.couchbase.CouchbaseInspectorModulesProvider;
 
+import com.couchbase.todo.libreria.CouchbaseDatabase;
+import com.couchbase.todo.libreria.CouchbaseManager;
+import com.couchbase.todo.libreria.CouchbaseUser;
+
 import java.io.IOException;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -45,7 +49,7 @@ public class Application extends android.app.Application {
                             .enableWebKitInspector(new CouchbaseInspectorModulesProvider(this))
                             .build());
         }
-        startSession("todo");
+        startSession("test");
 
         try {
             manager = new Manager(new AndroidContext(getApplicationContext()), Manager.DEFAULT_OPTIONS);
@@ -68,31 +72,17 @@ public class Application extends android.app.Application {
 
     // Session
 
+
     private void startSession(String username) {
         enableLogging();
-        openDatabase(username);
+        AndroidContext context = new AndroidContext(getApplicationContext());
+        manager= CouchbaseManager.createManager(username, context);
+        database=CouchbaseDatabase.openDatabase(username,manager);
         mUsername = username;
         showApp();
     }
 
     //Metodo para crear nueva base de datos (pueden ser infinitas)
-    private void openDatabase(String username) {
-        String dbname = username;
-        DatabaseOptions options = new DatabaseOptions();
-        options.setCreate(true);
-
-        Manager manager = null;
-        try {
-            manager = new Manager(new AndroidContext(getApplicationContext()), Manager.DEFAULT_OPTIONS);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            database = manager.openDatabase(dbname, options);
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void showApp() {
         Intent intent = new Intent();
