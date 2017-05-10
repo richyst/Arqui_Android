@@ -178,13 +178,13 @@ public class TasksFragment extends Fragment {
 
                 .show();
     }
-    private void handleTaskPopupAction(MenuItem item, Document task) {
+    private void handleTaskPopupAction(MenuItem item, Document user) {
         switch (item.getItemId()) {
             case R.id.update:
-                updateTask(task);
+                updateTask(user);
                 return;
             case R.id.delete:
-                deleteTask(task);
+                CouchbaseUser.deleteUser(user);
                 return;
         }
     }
@@ -276,26 +276,5 @@ public class TasksFragment extends Fragment {
 
         alert.show();
     }
-
-    private SavedRevision createUser(String title, String password) {
-        Map<String, Object> ListInfo = new HashMap<String, Object>();
-        ListInfo.put("id", mTaskList.getId());
-
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("type", "user");
-        properties.put("list", ListInfo);
-        properties.put("createdAt", new Date());
-        properties.put("name", title);
-        properties.put("password", password);
-
-        Document document = mDatabase.createDocument();
-        try {
-            return document.putProperties(properties);
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 
 }

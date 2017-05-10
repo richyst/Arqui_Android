@@ -42,6 +42,14 @@ public class CouchbaseUser {
         }
     }
 
+    public static void deleteUser(final Document user) {
+        try {
+            user.delete();
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 
