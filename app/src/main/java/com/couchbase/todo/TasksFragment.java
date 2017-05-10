@@ -130,7 +130,7 @@ public class TasksFragment extends Fragment {
         query.setDescending(false);
         listsLiveQuery = query.toLiveQuery();
 
-        final TasksFragment.TaskAdapter mAdapter = new TasksFragment.TaskAdapter(getActivity(), listsLiveQuery);
+        final TasksFragment.UserAdapter mAdapter = new TasksFragment.UserAdapter(getActivity(), listsLiveQuery);
 
         mListView.setAdapter(mAdapter);
 
@@ -181,7 +181,7 @@ public class TasksFragment extends Fragment {
     private void handleTaskPopupAction(MenuItem item, Document user) {
         switch (item.getItemId()) {
             case R.id.update:
-                updateTask(user);
+                updateUser(user);
                 return;
             case R.id.delete:
                 CouchbaseUser.deleteUser(user);
@@ -189,43 +189,27 @@ public class TasksFragment extends Fragment {
         }
     }
 
-    private void updateTask(final Document task) {
+    private void updateUser(final Document user) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setTitle("Update Usuario");
 
         final EditText input = new EditText(getContext());
         input.setMaxLines(1);
         input.setSingleLine(true);
-        String text = (String) task.getProperty("name");
+        String text = (String) user.getProperty("name");
         input.setText(text);
         alert.setView(input);
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Map<String, Object> updatedProperties = new HashMap<String, Object>();
-                updatedProperties.putAll(task.getProperties());
-                updatedProperties.put("name", input.getText().toString());
-
-                try {
-                    task.putProperties(updatedProperties);
-                } catch (CouchbaseLiteException e) {
-                    e.printStackTrace();
-                }
+                CouchbaseUser.updateUser(user,input.getText().toString() );
             }
         });
         alert.show();
     }
 
-    private void deleteTask(final Document task) {
-        try {
-            task.delete();
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private class TaskAdapter extends LiveQueryAdapter {
-        public TaskAdapter(Context context, LiveQuery query) {
+    private class UserAdapter extends LiveQueryAdapter {
+        public UserAdapter(Context context, LiveQuery query) {
             super(context, query);
         }
 

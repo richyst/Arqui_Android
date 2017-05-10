@@ -51,6 +51,17 @@ public class CouchbaseUser {
     }
 
 
+    public static void updateUser(final Document user, String name) {
+        Map<String, Object> updatedProperties = new HashMap<String, Object>();
+        updatedProperties.putAll(user.getProperties());
+        updatedProperties.put("name", name);
+
+        try {
+            user.putProperties(updatedProperties);
+        } catch (CouchbaseLiteException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

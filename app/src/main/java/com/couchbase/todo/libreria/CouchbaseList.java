@@ -15,7 +15,7 @@ import java.util.UUID;
  */
 
 public class CouchbaseList {
-    public SavedRevision createList(Database database, String name, String username) throws CouchbaseLiteException {
+    public static SavedRevision createList(Database database, String name, String username) throws CouchbaseLiteException {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("type", "list");
         properties.put("name", name);
@@ -26,7 +26,7 @@ public class CouchbaseList {
         return document.putProperties(properties);
     }
 
-    private void deleteList(final Document list) {
+    public static void deleteList(final Document list) {
         try {
             list.delete();
         } catch (CouchbaseLiteException e) {
@@ -34,7 +34,8 @@ public class CouchbaseList {
         }
     }
 
-    public boolean update(UnsavedRevision newRevision, String name) {
+    // no sirve aun
+    public static boolean update(UnsavedRevision newRevision, String name) {
         Map<String, Object> props = newRevision.getUserProperties();
         props.put("name", name);
         newRevision.setUserProperties(props);

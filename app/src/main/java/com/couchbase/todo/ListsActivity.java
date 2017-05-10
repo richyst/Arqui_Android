@@ -29,11 +29,13 @@ import com.couchbase.lite.Mapper;
 import com.couchbase.lite.SavedRevision;
 import com.couchbase.lite.UnsavedRevision;
 import com.couchbase.lite.util.Log;
+import com.couchbase.todo.libreria.CouchbaseList;
 import com.couchbase.todo.util.LiveQueryAdapter;
 
 import com.couchbase.todo.libreria.CouchbaseDatabase;
 import com.couchbase.todo.libreria.CouchbaseManager;
 import com.couchbase.todo.libreria.CouchbaseUser;
+import com.couchbase.todo.libreria.CouchbaseList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -171,7 +173,7 @@ public class ListsActivity extends AppCompatActivity {
                 updateList(list);
                 return;
             case R.id.delete:
-                deleteList(list);
+                CouchbaseList.deleteList(list);
                 return;
         }
     }
@@ -223,7 +225,7 @@ public class ListsActivity extends AppCompatActivity {
                     String title = input.getText().toString();
                     if (title.length() == 0)
                         return;
-                    createTaskList(title);
+                    CouchbaseList.createList(mDatabase, title, mUsername);
                 } catch (CouchbaseLiteException e) {
                     Log.e(Application.TAG, "Cannot create a new list", e);
                 }
@@ -236,13 +238,6 @@ public class ListsActivity extends AppCompatActivity {
 
         alert.show();
     }
-
-    //Edicion de listas, relacionado con las listas del metodo que sigue
-    /* TASKLIST = {name=lalala, type=task-list, owner= todo }
-    * Las Revisiones son las actualizaciones, literal se hace una revision del documento
-    * y con el metodo de setUserPorperties y getUserProperties se editan y se accesan los
-    * documentos
-    * */
 
     private void updateList(final Document list) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -274,29 +269,5 @@ public class ListsActivity extends AppCompatActivity {
         });
         alert.show();
     }
-
-    // Método muy simple, usa el delete de Document de Couchbase
-    private void deleteList(final Document list) {
-        try {
-            list.delete();
-        } catch (CouchbaseLiteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //codigo para guardar listas, podemos hacerlo nuestro primer nivel de detalle
-    //Osea que sea cada base de datos
-
-    private SavedRevision createTaskList(String title) throws CouchbaseLiteException {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("type", "list");
-        properties.put("name", title);
-
-        String docId = mUsername + "." + UUID.randomUUID();
-
-        Document document = mDatabase.getDocument(docId);
-        return document.putProperties(properties);
-    }
-
 
 }
