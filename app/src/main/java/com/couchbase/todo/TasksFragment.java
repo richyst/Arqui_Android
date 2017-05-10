@@ -30,6 +30,9 @@ import com.couchbase.lite.Query;
 import com.couchbase.lite.SavedRevision;
 import com.couchbase.todo.util.LiveQueryAdapter;
 
+import com.couchbase.todo.libreria.CouchbaseDatabase;
+import com.couchbase.todo.libreria.CouchbaseManager;
+import com.couchbase.todo.libreria.CouchbaseUser;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -263,7 +266,7 @@ public class TasksFragment extends Fragment {
                     String password = input1.getText().toString();
                     if (title.length() == 0 || password.length()==0)
                         return;
-                    createTask(title, password);
+                    CouchbaseUser.createUser(title, password, mTaskList, mDatabase);
             }
         });
 
@@ -274,7 +277,7 @@ public class TasksFragment extends Fragment {
         alert.show();
     }
 
-    private SavedRevision createTask(String title, String password) {
+    private SavedRevision createUser(String title, String password) {
         Map<String, Object> ListInfo = new HashMap<String, Object>();
         ListInfo.put("id", mTaskList.getId());
 
