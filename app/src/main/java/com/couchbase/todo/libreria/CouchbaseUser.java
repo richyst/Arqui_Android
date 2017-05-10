@@ -13,12 +13,25 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Esta clase es un permite crear, eliminar, actualizar para usuarios.
+ *
+ * @author A01337828 - A01336386 -  A01337375
+ */
 public class CouchbaseUser {
 
 
 
-
-    public static SavedRevision createUser(String title, String password, Document list, Database database) {
+    /**
+     * Método para la creación de una nueva lista contenedora de Usuarios.
+     *
+     * @param name Nombre que tendrá el usuario por crear.
+     * @param password Password perteneciente al usuario por crear.
+     * @param list Lista a la que pertenece el usuario, creada con CouchbaseList de este paquete.
+     * @param database Base de Datos donde se va a guardar el usuario.
+     * @return Regresa un SavedRevision del nuevo usuario.
+     */
+    public static SavedRevision createUser(String name, String password, Document list, Database database) {
         Map<String, Object> ListInfo = new HashMap<String, Object>();
         ListInfo.put("id", list.getId());
 
@@ -26,7 +39,7 @@ public class CouchbaseUser {
         properties.put("type", "user");
         properties.put("list", ListInfo);
         properties.put("createdAt", new Date());
-        properties.put("name", title);
+        properties.put("name", name);
         properties.put("password", password);
 
         Document document = database.createDocument();
@@ -38,6 +51,11 @@ public class CouchbaseUser {
         }
     }
 
+    /**
+     * Método para la eliminación de un usuario existente.
+     *
+     * @param user Documento de usuario que se va a eliminar.
+     */
     public static void deleteUser(final Document user) {
         try {
             user.delete();
@@ -46,11 +64,17 @@ public class CouchbaseUser {
         }
     }
 
-
-    public static void updateUser(final Document user, String name) {
+    /**
+     * Método para la actualización del nombre de un usuario.
+     *
+     * @param user Usuario cuyo nombre se quiere cambiar.
+     * @param prop Propiedad del usuario que se quiere cambiar. (Se le deja escoger al usuario cual propiedad modificar pero puede crear confusiones si no se usa con cuidado.)
+     * @param val Valor que se le asignará a la propiedad que se quiere cambiar.
+     */
+    public static void updateUser(final Document user, String prop, String val) {
         Map<String, Object> updatedProperties = new HashMap<String, Object>();
         updatedProperties.putAll(user.getProperties());
-        updatedProperties.put("name", name);
+        updatedProperties.put(prop, val);
 
         try {
             user.putProperties(updatedProperties);

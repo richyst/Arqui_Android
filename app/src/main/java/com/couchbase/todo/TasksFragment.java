@@ -202,7 +202,7 @@ public class TasksFragment extends Fragment {
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                CouchbaseUser.updateUser(user,input.getText().toString() );
+                CouchbaseUser.updateUser(user,"name",input.getText().toString());
             }
         });
         alert.show();
