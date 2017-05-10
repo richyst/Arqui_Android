@@ -1,1 +1,1 @@
-include ':app', ':couchbaseusers'
+include ':app'

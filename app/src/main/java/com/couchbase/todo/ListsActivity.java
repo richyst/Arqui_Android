@@ -114,13 +114,13 @@ public class ListsActivity extends AppCompatActivity {
             }
         });
     }
-    
+
 
     private void setupViewAndQuery() {
         if (mDatabase == null) {
             return;
         }
-        com.couchbase.lite.View listsView = mDatabase.getView("list/listsByName");
+        com.couchbase.lite.View listsView = CouchbaseList.getVista(mDatabase, "list/listsByName");
         if (listsView.getMap() == null) {
             listsView.setMap(new Mapper() {
                 @Override
@@ -178,7 +178,6 @@ public class ListsActivity extends AppCompatActivity {
 
     }
 
-    //DIalogo para iniciar la creada de un TaskList, solo se envía el titulo.
     private void displayCreateDialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(getResources().getString(R.string.title_dialog_new_list));

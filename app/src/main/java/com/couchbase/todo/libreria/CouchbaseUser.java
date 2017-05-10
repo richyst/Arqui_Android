@@ -16,9 +16,7 @@ import java.util.Map;
 public class CouchbaseUser {
 
 
-    public com.couchbase.lite.View getVista(Database database, String test){
-        return database.getView(test);
-    }
+
 
     public static SavedRevision createUser(String title, String password, Document list, Database database) {
         Map<String, Object> ListInfo = new HashMap<String, Object>();

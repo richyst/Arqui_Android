@@ -38,4 +38,7 @@ public class CouchbaseList {
     public static Document getList(String test, Database database){
         return database.getDocument(test);
     }
+    public static com.couchbase.lite.View getVista(Database database, String test){
+        return database.getView(test);
+    }
 }
