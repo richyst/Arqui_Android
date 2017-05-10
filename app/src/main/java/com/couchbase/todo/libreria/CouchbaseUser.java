@@ -14,9 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CouchbaseUser {
-    public Document getUser(String test, Database database){
-        return database.getDocument(test);
-    }
+
 
     public com.couchbase.lite.View getVista(Database database, String test){
         return database.getView(test);

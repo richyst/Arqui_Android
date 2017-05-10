@@ -27,7 +27,7 @@ import com.couchbase.lite.Emitter;
 import com.couchbase.lite.LiveQuery;
 import com.couchbase.lite.Mapper;
 import com.couchbase.lite.Query;
-import com.couchbase.lite.SavedRevision;
+import com.couchbase.todo.libreria.CouchbaseList;
 import com.couchbase.todo.util.LiveQueryAdapter;
 
 import com.couchbase.todo.libreria.CouchbaseDatabase;
@@ -92,7 +92,7 @@ public class TasksFragment extends Fragment {
         mDatabase = application.getDatabase();
         mUsername = application.getUsername();
         Intent intent = getActivity().getIntent();
-        mTaskList = mDatabase.getDocument(intent.getStringExtra(INTENT_LIST_ID));
+        mTaskList = CouchbaseList.getList(intent.getStringExtra(INTENT_LIST_ID), mDatabase);
 
         setupViewAndQuery();
 

@@ -114,37 +114,7 @@ public class ListsActivity extends AppCompatActivity {
             }
         });
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Bundle bundle = this.getIntent().getExtras();
-        if(bundle != null) {
-            Boolean loginFlowEnabled = bundle.getBoolean(Application.LOGIN_FLOW_ENABLED);
-            if(loginFlowEnabled) {
-                MenuInflater inflater = getMenuInflater();
-                inflater.inflate(R.menu.logout_menu, menu);
-            }
-        }
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.logout:
-                Application application = (Application) getApplication();
-                return true;
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    // Database
-
-    //metodo para obtener los tasklist y se hace una vista
+    
 
     private void setupViewAndQuery() {
         if (mDatabase == null) {
@@ -170,7 +140,6 @@ public class ListsActivity extends AppCompatActivity {
     private void handleListPopupAction(MenuItem item, Document list) {
         switch (item.getItemId()) {
             case R.id.update:
-                updateList(list);
                 return;
             case R.id.delete:
                 CouchbaseList.deleteList(list);
@@ -236,37 +205,6 @@ public class ListsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int whichButton) { }
         });
 
-        alert.show();
-    }
-
-    private void updateList(final Document list) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Update Lista");
-
-        final EditText input = new EditText(this);
-        input.setMaxLines(1);
-        input.setSingleLine(true);
-        String text = (String) list.getProperty("name");
-        input.setText(text);
-        alert.setView(input);
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                try {
-                    list.update(new Document.DocumentUpdater() {
-                        @Override
-                        public boolean update(UnsavedRevision newRevision) {
-                            Map<String, Object> props = newRevision.getUserProperties();
-                            props.put("name", input.getText().toString());
-                            newRevision.setUserProperties(props);
-                            return true;
-                        }
-                    });
-                } catch (CouchbaseLiteException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
         alert.show();
     }
 
